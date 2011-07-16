@@ -1,8 +1,9 @@
 /*
-  LogicShrimpTest
-  Uses 4 digital outputs to test the Logic Shrimp.
- 
-  This example code is in the public domain.
+ *  LogicShrimpTest
+ *
+ *  Uses 4 digital outputs to test the Logic Shrimp.
+ *
+ *  This example code is in the public domain.
  */
 
 unsigned int i;
