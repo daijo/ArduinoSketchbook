@@ -12,10 +12,11 @@
 NewSoftSerial mySerial(7, 8);
 
 // Configuration
-#define DEFAULT_WAIT 1000
-#define MAX_BUFFER_LEN 80
-#define MAX_NUMBER_LEN 20
-#define MAX_MESSAGE_LEN 140
+const int DEFAULT_WAIT = 1000;
+const int MAX_BUFFER_LEN = 80;
+const int MAX_NUMBER_LEN = 20;
+const int MAX_MESSAGE_LEN = 140;
+
 #define DEBUG true
 #define USE_SOFT_SERIAL true
 
