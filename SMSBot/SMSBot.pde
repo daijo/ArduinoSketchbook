@@ -106,7 +106,7 @@ void parseATCommand(char* line) {
     // parse out the message id
     char* msgID = parseForMessageID(line);
     // compose AT command to read the message
-    char* reply = ("AT+CMGR=", msgID);
+    char* reply = concat("AT+CMGR=", msgID);
 
     SIM900_SEND(reply)
     SIM900_SEND("\r\n")
