@@ -106,7 +106,7 @@ void parseATCommand(char* line) {
     // parse out the message id
     char* msgID = parseForMessageID(line);
     // compose AT command to read the message
-    char* reply = strcat("AT+CMGR=", msgID);
+    char* reply = ("AT+CMGR=", msgID);
 
     SIM900_SEND(reply)
     SIM900_SEND("\r\n")
@@ -141,8 +141,8 @@ void parseForPhoneNumber(char* line) {
 }
 
 void sendGreetingTo(char* number) {
-  char* command1 = strcat("AT+CMGS=\"",number);
-  char* command2 = strcat(command1, "\"\r\n");
+  char* command1 = concat("AT+CMGS=\"",number);
+  char* command2 = concat(command1, "\"\r\n");
 
   SIM900_SEND(command2);
   delay(DEFAULT_WAIT);
@@ -152,4 +152,16 @@ void sendGreetingTo(char* number) {
 
   free(command1);
   free(command2);
+}
+
+// Utility methods
+char* concat(char* str1, char* str2) {
+  size_t len1 = strlen(str1);
+  size_t len2 = strlen(str2);
+
+  char* s = (char*)malloc(len1 + len2 + 2);
+  memcpy(s, str1, len1);
+  s[len1] = ' ';
+  memcpy(s + len1, str2, len2 + 1);
+  return s;
 }
