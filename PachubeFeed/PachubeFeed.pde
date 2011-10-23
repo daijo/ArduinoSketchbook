@@ -1,3 +1,19 @@
+/* Sketch for sending data to a Pachube feed using the GPRS shield. */
+
+/* Cellcard config
+*
+* Connect name: 	GPRS Cellcard
+* International Access Point Name(APN): 	cellcard
+* Data bearer/connection type: 	GPRS
+* User name: 	mobitel
+* Password: 	mobitel
+* Authentication: 	normal
+* WAP/Proxy address: 	203.144.95.100
+* Port: 	8080 (8080 for http and 9201 for wap)
+* Homepage: 	http://www.cellcard.com.kh/mobile
+*/
+
+
 #include <NewSoftSerial.h>
  
 NewSoftSerial GPRS_Serial(7, 8);
@@ -72,9 +88,8 @@ setup_start:
       }
     }
  
-    GPRS_Serial.println("AT+CGDCONT=1,\"IP\",\"cellcard\",\"203.144.95.100\",0,0"); //Defining the Packet Data
-//Protocol Context - i.e. the Protocol Type, Access Point Name and IP Address
-    Serial.println("AT+CGDCONT=1,\"IP\",\"cellcard\",\"203.144.95.100\",0,0   Sent!");
+    GPRS_Serial.println("AT+CGDCONT=?");
+    Serial.println("AT+CGDCONT=?   Sent!");
     if(GPRS_Serial_wait_for_bytes(4,10) == 0)
     {  
       Serial.println("Timeout");
@@ -90,8 +105,25 @@ setup_start:
       }
     }
  
-    GPRS_Serial.println("AT+CSTT=\"cellcard\""); //Start Task and set Access Point Name (and username and password if any)
-    Serial.println("AT+CSTT=\"cellcard\"   Sent!");
+    GPRS_Serial.println("AT+CGDCONT=1,\"IP\",\"cellcard\"");
+    Serial.println("AT+CGDCONT=1,\"IP\",\"cellcard\"   Sent!");
+    if(GPRS_Serial_wait_for_bytes(4,10) == 0)
+    {  
+      Serial.println("Timeout");
+      goto setup_start;
+    }
+    else
+    {
+      Serial.print("Received:");
+      while(GPRS_Serial.available()!=0)
+      {
+        Serial.print((unsigned char)GPRS_Serial.read());
+        Serial.print("\n");
+      }
+    }
+ 
+    GPRS_Serial.println("AT+CSTT=\"cellcard\",\"mobitel\",\"mobitel\""); //Start Task and set Access Point Name (and username and password if any)
+    Serial.println("AT+CSTT=\"cellcard\",\"mobitel\",\"mobitel\"   Sent!");
     if(GPRS_Serial_wait_for_bytes(4,10) == 0)
     {  
       Serial.println("Timeout");
@@ -196,9 +228,7 @@ loop_start:
   GPRS_Serial.print("Connection: close\r\n\r\n"); 
   Serial.print("Connection: close  Sent!"); 
   delay(300);
-  GPRS_Serial.print("Testfeed,");
-  delay(300);
-  GPRS_Serial.print(0.5); //data
+  GPRS_Serial.print("01,100"); // <datastream_id>,<value>
   delay(300);
   GPRS_Serial.print("\r\n"); 
   delay(300);
