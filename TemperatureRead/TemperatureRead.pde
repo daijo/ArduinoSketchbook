@@ -1,5 +1,6 @@
 /* Taking a temperature reading from the Grove system thermometer Twig
-*  on Analog 0.
+ * on Analog 0.
+ */
 
 int a;
 int del=1000; // duration between temperature readings
