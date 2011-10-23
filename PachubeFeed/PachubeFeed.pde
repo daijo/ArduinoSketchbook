@@ -1,23 +1,3 @@
-//Remember when using GPRS Shield with Seeeduino Stalker v2.0 
-//please dismount the OK_READ Jumper (i.e. open it).
-//This will disconnect the Battery Charger IC's OK pin from
-//the microcontrollers Digital Pin 7 and hence allow unhindered
-//communication with GPRS Shield using NewSoftSerial Library. 
- 
- 
-//Replace the following items in the code:
-//1. Replace the Access Point Name "TATA.DOCOMO.INTERNET" 
-//and the DNS server name "10.6.6.6" in the AT+CGDCONT and AT+CSTT
-//commands with those of your own service provider.
-//
-//2. Replace the Pachube API Key with your personal ones assigned
-//to your account at pachube.com
-//
-//3. You may choose a different name for the the data stream.
-//I have choosen "TMP102". If you use a different name, you will have
-//to replace this string with the new name.
-//
- 
 #include <NewSoftSerial.h>
  
 NewSoftSerial GPRS_Serial(7, 8);
@@ -205,8 +185,8 @@ loop_start:
   Serial.println("Host: api.pachube.com  Sent!");
   delay(300);
  
-  GPRS_Serial.print("X-PachubeApiKey: abcdefghijklmnopqrstuvwxyz0123456789abcdefghijklmnopqrstuvwxyz01\r\n"); //REPLACE THIS KEY WITH YOUR OWN PACHUBE API KEY
-  Serial.println("X-PachubeApiKey: abcdefghijklmnopqrstuvwxyz0123456789abcdefghijklmnopqrstuvwxyz01  Sent!"); //REPLACE THIS KEY WITH YOUR OWN PACHUBE API KEY
+  GPRS_Serial.print("X-PachubeApiKey: InhcuAxN_0BqUu4SvS4EPUWhTglRnjl6F9ibvMfr0hc\r\n"); //REPLACE THIS KEY WITH YOUR OWN PACHUBE API KEY
+  Serial.println("X-PachubeApiKey: InhcuAxN_0BqUu4SvS4EPUWhTglRnjl6F9ibvMfr0hc  Sent!"); //REPLACE THIS KEY WITH YOUR OWN PACHUBE API KEY
   delay(300);
  
   GPRS_Serial.print("Content-Length: 12\r\n"); 
@@ -216,9 +196,9 @@ loop_start:
   GPRS_Serial.print("Connection: close\r\n\r\n"); 
   Serial.print("Connection: close  Sent!"); 
   delay(300);
-  GPRS_Serial.print("testfeed,"); //You may replace the stream name "TMP102" to any other string that you have choosen.
+  GPRS_Serial.print("Testfeed,");
   delay(300);
-  //GPRS_Serial.print(convertedtemp); 
+  GPRS_Serial.print(0.5); //data
   delay(300);
   GPRS_Serial.print("\r\n"); 
   delay(300);
