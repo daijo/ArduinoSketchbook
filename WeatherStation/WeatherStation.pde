@@ -1,6 +1,11 @@
+#include <MsTimer2.h>
 #include <NewSoftSerial.h>
  
 NewSoftSerial GPRS_Serial(7, 8);
+
+// Timing
+boolean waiting = false;
+int seconds = 0;
 
 // Thermometer setup
 int a;
@@ -25,7 +30,7 @@ setup_start:
   Serial.println("Turn on GPRS Modem and wait for 1 minute.");
   Serial.println("and then press a key");
   Serial.println("Press c for power on configuration");
-  Serial.println("press any other key for uploading");
+  Serial.println("press any other key to continue");
   Serial.flush();
   while(Serial.available() == 0);
   if(Serial.read()=='c')
@@ -153,21 +158,22 @@ setup_start:
       }
     }
   }
+  
+  MsTimer2::set(1000, oneSecondGone); // 1000ms period
+  MsTimer2::start();
 }
  
 void loop()
 {
 loop_start:
- 
-  Serial.println("Press a key to read temperature and upload it");
-  Serial.flush();
-  while(Serial.available() == 0);
-  Serial.read();
+  
+  while(waiting);
+  waiting = true;
  
   getTemp();
   
   Serial.print("Temperature = ");
-  Serial.println(convertedtemp);
+  Serial.println(temperature);
  
   GPRS_Serial.println("AT+CIPSTART=\"TCP\",\"api.pachube.com\",\"80\""); //Open a connection to Pachube.com
   Serial.println("AT+CIPSTART=\"TCP\",\"api.pachube.com\",\"80\"  Sent!");
@@ -207,8 +213,8 @@ loop_start:
   GPRS_Serial.flush();
  
   //Emulate HTTP and use PUT command to upload temperature datapoint using Comma Seperate Value Method
-  GPRS_Serial.print("PUT /v2/feeds/24300.csv HTTP/1.1\r\n");
-  Serial.println("PUT /v2/feeds/24300.csv HTTP/1.1  Sent!");
+  GPRS_Serial.print("PUT /v2/feeds/37937.csv HTTP/1.1\r\n");
+  Serial.println("PUT /v2/feeds/37937.csv HTTP/1.1  Sent!");
   delay(300);
  
   GPRS_Serial.print("Host: api.pachube.com\r\n"); 
@@ -247,7 +253,7 @@ loop_start:
     while(GPRS_Serial.available()!=0)
     {
       Serial.print((unsigned char)GPRS_Serial.read());
-      Serial.print("\n");
+      //Serial.print("\n");
     }
   }
 
@@ -269,7 +275,16 @@ loop_start:
     }
   }
 }
- 
+
+void oneSecondGone()
+{
+  seconds++;
+  if(seconds > 3600) {
+    seconds = 0;
+    waiting = false;
+  } 
+}
+
 char GPRS_Serial_wait_for_bytes(char no_of_bytes, int timeout)
 {
   while(GPRS_Serial.available() < no_of_bytes)
