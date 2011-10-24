@@ -6,7 +6,7 @@ NewSoftSerial GPRS_Serial(7, 8);
 #define LOG(s) Serial.print(s);
 
 // Timing
-int SECONDS_BETWEEN_UPDATE = 60;
+int SECONDS_BETWEEN_UPDATE = 600;
 int seconds = 0;
 volatile boolean should_wait = true;
 
