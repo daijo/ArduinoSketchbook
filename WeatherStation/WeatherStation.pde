@@ -3,13 +3,12 @@
 
 // Serial
 NewSoftSerial GPRS_Serial(7, 8);
-boolean user_timed_out = false;
-#define LOG(s) if(!user_timed_out) Serial.print(s);
+#define LOG(s) Serial.print(s);
 
 // Timing
-int SECONDS_BETWEEN_UPDATE = 120;
+int SECONDS_BETWEEN_UPDATE = 600;
 int seconds = 0;
-volatile boolean should_wait = false;
+volatile boolean should_wait = true;
 
 // Thermometer setup
 int a;
@@ -36,11 +35,9 @@ setup_start:
   Serial.println("Press c for power on configuration");
   Serial.println("press any other key to continue");
   Serial.flush();
-  if(Serial_wait_for_bytes(1,25) == 0)
-  {  
-    user_timed_out = true;
-  }
-  if(user_timed_out || Serial.read()=='c')
+  
+  Serial_wait_for_bytes(1,10);
+  if(Serial.read()=='c')
   {
     LOG("Executing AT Commands for one time power on configuration");
  
@@ -304,7 +301,6 @@ void oneSecondGone()
 
 char GPRS_Serial_wait_for_bytes(char no_of_bytes, int timeout)
 {
-  LOG("GPRS_Serial_wait_for_bytes\r\n")
   while(GPRS_Serial.available() < no_of_bytes)
   {
     delay(200);
