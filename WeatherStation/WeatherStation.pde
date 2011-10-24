@@ -6,7 +6,7 @@ NewSoftSerial GPRS_Serial(7, 8);
 #define LOG(s) Serial.print(s);
 
 // Timing
-int SECONDS_BETWEEN_UPDATE = 600;
+int SECONDS_BETWEEN_UPDATE = 60;
 int seconds = 0;
 volatile boolean should_wait = true;
 
@@ -36,25 +36,19 @@ setup_start:
   Serial.println("press any other key to continue");
   Serial.flush();
   
-  Serial_wait_for_bytes(1,10);
-  if(Serial.read()=='c')
-  {
+  if(Serial_wait_for_bytes(1,10) == 0 || Serial.read() == 'c') {
     LOG("Executing AT Commands for one time power on configuration");
  
     GPRS_Serial.flush();
  
     GPRS_Serial.println("ATE0"); //Command echo off
     LOG("ATE0   Sent");
-    if(GPRS_Serial_wait_for_bytes(4,10) == 0)
-    {  
+    if(GPRS_Serial_wait_for_bytes(4,10) == 0) {  
       LOG("Timeout");
       goto setup_start;
-    }
-    else
-    {
+    } else {
       LOG("Received:");
-      while(GPRS_Serial.available()!=0)
-      {
+      while(GPRS_Serial.available()!=0) {
         LOG((unsigned char)GPRS_Serial.read());
         LOG("\n");
       }
@@ -62,16 +56,12 @@ setup_start:
  
     GPRS_Serial.println("AT+CIPMUX=0"); //We only want a single IP Connection at a time.
     LOG("AT+CIPMUX=0   Sent");
-    if(GPRS_Serial_wait_for_bytes(4,10) == 0)
-    {  
+    if(GPRS_Serial_wait_for_bytes(4,10) == 0) {  
       LOG("Timeout");
       goto setup_start;
-    }
-    else
-    {
+    } else {
       LOG("Received:");
-      while(GPRS_Serial.available()!=0)
-      {
+      while(GPRS_Serial.available()!=0) {
         LOG((unsigned char)GPRS_Serial.read());
         LOG("\n");
       }
@@ -79,16 +69,13 @@ setup_start:
  
     GPRS_Serial.println("AT+CIPMODE=0"); //Selecting "Normal Mode" and NOT "Transparent Mode" as the TCP/IP Application Mode
     LOG("AT+CIPMODE=0    Sent!");
-    if(GPRS_Serial_wait_for_bytes(4,10) == 0)
-    {  
+    if(GPRS_Serial_wait_for_bytes(4,10) == 0) {  
       LOG("Timeout");
       goto setup_start;
     }
-    else
-    {
+    else {
       LOG("Received:");
-      while(GPRS_Serial.available()!=0)
-      {
+      while(GPRS_Serial.available()!=0) {
         LOG((unsigned char)GPRS_Serial.read());
         LOG("\n");
       }
@@ -96,16 +83,12 @@ setup_start:
  
     GPRS_Serial.println("AT+CGDCONT=?");
     LOG("AT+CGDCONT=?   Sent!");
-    if(GPRS_Serial_wait_for_bytes(4,10) == 0)
-    {  
+    if(GPRS_Serial_wait_for_bytes(4,10) == 0) {  
       LOG("Timeout");
       goto setup_start;
-    }
-    else
-    {
+    } else {
       LOG("Received:");
-      while(GPRS_Serial.available()!=0)
-      {
+      while(GPRS_Serial.available()!=0) {
         LOG((unsigned char)GPRS_Serial.read());
         LOG("\n");
       }
@@ -113,16 +96,12 @@ setup_start:
  
     GPRS_Serial.println("AT+CGDCONT=1,\"IP\",\"cellcard\"");
     LOG("AT+CGDCONT=1,\"IP\",\"cellcard\"   Sent!");
-    if(GPRS_Serial_wait_for_bytes(4,10) == 0)
-    {  
+    if(GPRS_Serial_wait_for_bytes(4,10) == 0) {  
       LOG("Timeout");
       goto setup_start;
-    }
-    else
-    {
+    } else {
       LOG("Received:");
-      while(GPRS_Serial.available()!=0)
-      {
+      while(GPRS_Serial.available()!=0) {
         LOG((unsigned char)GPRS_Serial.read());
         LOG("\n");
       }
@@ -130,16 +109,12 @@ setup_start:
  
     GPRS_Serial.println("AT+CSTT=\"cellcard\",\"mobitel\",\"mobitel\""); //Start Task and set Access Point Name (and username and password if any)
     LOG("AT+CSTT=\"cellcard\",\"mobitel\",\"mobitel\"   Sent!");
-    if(GPRS_Serial_wait_for_bytes(4,10) == 0)
-    {  
+    if(GPRS_Serial_wait_for_bytes(4,10) == 0) {  
       LOG("Timeout");
       goto setup_start;
-    }
-    else
-    {
+    } else {
       LOG("Received:");
-      while(GPRS_Serial.available()!=0)
-      {
+      while(GPRS_Serial.available()!=0) {
         LOG((unsigned char)GPRS_Serial.read());
         LOG("\n");
       }
@@ -147,16 +122,12 @@ setup_start:
  
     GPRS_Serial.println("AT+CIPSHUT"); //Close any GPRS Connection if open
     LOG("AT+CIPSHUT  Sent!");
-    if(GPRS_Serial_wait_for_bytes(7,10) == 0)
-    {  
+    if(GPRS_Serial_wait_for_bytes(7,10) == 0) {  
       LOG("Timeout");
       goto setup_start;
-    }
-    else
-    {
+    } else {
       LOG("Received:");
-      while(GPRS_Serial.available()!=0)
-      {
+      while(GPRS_Serial.available()!=0) {
         LOG((unsigned char)GPRS_Serial.read());
         LOG("\n");
       }
@@ -188,16 +159,12 @@ void sendData()
  
   GPRS_Serial.println("AT+CIPSTART=\"TCP\",\"api.pachube.com\",\"80\""); //Open a connection to Pachube.com
   LOG("AT+CIPSTART=\"TCP\",\"api.pachube.com\",\"80\"  Sent!");
-  if(GPRS_Serial_wait_for_bytes(12,255) == 0)
-  {  
+  if(GPRS_Serial_wait_for_bytes(12,255) == 0) {  
     LOG("Timeout");
     goto send_start;
-  }
-  else
-  {
+  } else {
     LOG("Received:");
-    while(GPRS_Serial.available()!=0)
-    {
+    while(GPRS_Serial.available()!=0) {
       LOG((unsigned char)GPRS_Serial.read());
       LOG("\n");
     }
@@ -206,16 +173,12 @@ void sendData()
   GPRS_Serial.flush();
   GPRS_Serial.println("AT+CIPSEND"); //Start data through TCP connection
   LOG("AT+CIPSEND  Sent!");
-  if(GPRS_Serial_wait_for_bytes(1,100) == 0)
-  {  
+  if(GPRS_Serial_wait_for_bytes(1,100) == 0) {  
     LOG("Timeout");
     goto send_start;
-  }
-  else
-  {
+  } else {
     LOG("Received:");
-    while(GPRS_Serial.available()!=0)
-    {
+    while(GPRS_Serial.available()!=0) {
       LOG((unsigned char)GPRS_Serial.read());
       LOG("\n");
     }
@@ -253,16 +216,12 @@ void sendData()
   delay(300);
   GPRS_Serial.print(0x1A,BYTE);
   delay(300); //Send End Of Line Character to send all the data and close connection
-  if(GPRS_Serial_wait_for_bytes(20,255) == 0)
-  {  
+  if(GPRS_Serial_wait_for_bytes(20,255) == 0) {  
     LOG("Timeout");
     goto send_start;
-  }
-  else
-  {
+  } else {
     LOG("Received:");
-    while(GPRS_Serial.available()!=0)
-    {
+    while(GPRS_Serial.available()!=0) {
       LOG((unsigned char)GPRS_Serial.read());
     }
   }
@@ -270,16 +229,12 @@ void sendData()
   GPRS_Serial.flush();
   GPRS_Serial.println("AT+CIPSHUT"); //Close the GPRS Connection
   LOG("AT+CIPSHUT  Sent!");
-  if(GPRS_Serial_wait_for_bytes(4,100) == 0)
-  {  
+  if(GPRS_Serial_wait_for_bytes(4,100) == 0) {  
     LOG("Timeout");
     goto send_start;
-  }
-  else
-  {
+  } else {
     LOG("Received:");
-    while(GPRS_Serial.available()!=0)
-    {
+    while(GPRS_Serial.available()!=0) {
       LOG((unsigned char)GPRS_Serial.read());
       LOG("\n");
     }
@@ -301,12 +256,10 @@ void oneSecondGone()
 
 char GPRS_Serial_wait_for_bytes(char no_of_bytes, int timeout)
 {
-  while(GPRS_Serial.available() < no_of_bytes)
-  {
+  while(GPRS_Serial.available() < no_of_bytes) {
     delay(200);
     timeout-=1;
-    if(timeout == 0)
-    {
+    if(timeout == 0) {
       return 0;
     }
   }
@@ -315,12 +268,10 @@ char GPRS_Serial_wait_for_bytes(char no_of_bytes, int timeout)
 
 char Serial_wait_for_bytes(char no_of_bytes, int timeout)
 {
-  while(Serial.available() < no_of_bytes)
-  {
+  while(Serial.available() < no_of_bytes) {
     delay(200);
     timeout-=1;
-    if(timeout == 0)
-    {
+    if(timeout == 0) {
       return 0;
     }
   }
