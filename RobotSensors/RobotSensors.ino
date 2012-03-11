@@ -12,6 +12,10 @@ unsigned long cycle = 0;
 // initialize the library
 SerialLCD slcd(11,12);
 
+long ping();
+long microsecondsToCentimeters(long microseconds);
+long sensorValueToCentimeters(long sensorValue);
+
 void setup() {
 
   if(USE_LCD) {
